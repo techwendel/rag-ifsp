@@ -181,9 +181,8 @@ mode = st.radio(
     ["Localizar documentos", "Consultar conteúdo"],
     horizontal=True,
 )
-question = st.text_area(
+question = st.text_input(
     "Sua pergunta",
-    height=100,
     placeholder=(
         "Ex.: Projetos de extensão relacionados ao meio ambiente"
         if mode == "Localizar documentos"
