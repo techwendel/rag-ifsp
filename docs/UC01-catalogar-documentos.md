@@ -36,3 +36,20 @@ Este caso de uso contempla:
 
 **Fora do escopo:** download, armazenamento no Google Drive e indexação no Vector Store.
 
+## 6. Fluxo principal — Catalogação bem-sucedida
+
+**FP01 — Iniciar catalogação**
+
+1. O usuário acessa a interface da extensão.
+2. O usuário solicita o início da catalogação.
+3. O sistema identifica os endereços institucionais configurados como pontos de partida.
+4. O sistema acessa as páginas elegíveis e identifica seus links.
+5. O sistema percorre os links institucionais permitidos, respeitando os limites configurados de rastreamento.
+6. O sistema identifica referências a documentos PDF.
+7. O sistema registra os documentos identificados, evitando referências duplicadas conforme suas regras de catalogação.
+8. O sistema disponibiliza o catálogo resultante para utilização posterior.
+
+**Pós-condição de sucesso:** um catálogo de referências documentais foi produzido.
+
+**Observação:** a identificação e a catalogação não implicam o download dos arquivos PDF.
+
