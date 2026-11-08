@@ -1,0 +1,88 @@
+# Validação funcional — Documentos já coletados v0.3.3
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC03 — Identificar documentos já coletados  
+**Versão validada:** v0.3.3  
+**Data:** 08/11/2026  
+**Situação:** Aprovado
+
+## 1. Objetivo
+
+Validar a capacidade da extensão de reconhecer documentos PDF coletados anteriormente, preservar seu histórico entre sessões do navegador e evitar downloads desnecessários.
+
+## 2. Funcionalidades avaliadas
+
+- Registro persistente dos documentos baixados com sucesso.
+- Reconhecimento de documentos previamente coletados.
+- Identificação de documentos novos ou pendentes.
+- Preservação do histórico após fechar e reabrir o navegador.
+- Manutenção da elegibilidade de documentos com falha anterior.
+
+## 3. Procedimentos de teste
+
+1. Instalação da extensão v0.3.3.
+2. Importação de catálogo contendo 97 documentos PDF.
+3. Execução do processo de download.
+4. Conclusão de 96 downloads e registro de uma falha.
+5. Reimportação do mesmo catálogo JSON.
+6. Verificação dos documentos reconhecidos como já coletados.
+7. Fechamento e reabertura do navegador.
+8. Nova importação do catálogo e verificação da persistência do histórico.
+
+## 4. Resultados obtidos
+
+| Indicador | Resultado |
+|---|---:|
+| PDFs catalogados | 97 |
+| Downloads concluídos na execução inicial | 96 |
+| Downloads com falha | 1 |
+| Documentos reconhecidos após reimportação | 96 |
+| Documentos novos ou pendentes | 1 |
+| Documentos reconhecidos após reabrir o navegador | 96 |
+
+A extensão reconheceu os 96 documentos anteriormente baixados, mantendo apenas um documento elegível para nova tentativa.
+
+O resultado permaneceu inalterado após o fechamento e a reabertura do navegador.
+
+## 5. Tratamento da falha remanescente
+
+**Documento:** Portaria 2.968, de 24/08/2015.
+
+**Erro:** Resposta não é um PDF (assinatura inválida).
+
+O documento não foi registrado como coletado, permanecendo pendente para uma eventual tentativa posterior.
+
+Esse comportamento atende ao requisito de não considerar concluídos documentos cujo download não tenha sido realizado com sucesso.
+
+## 6. Critérios de aceitação verificados
+
+| Critério | Resultado |
+|---|---|
+| Reconhecer documentos anteriormente baixados | Aprovado |
+| Preservar histórico entre sessões do navegador | Aprovado |
+| Identificar documentos ainda pendentes | Aprovado |
+| Não registrar downloads malsucedidos como concluídos | Aprovado |
+| Informar quantidades de documentos coletados e pendentes | Aprovado |
+
+A ausência de novos downloads desnecessários foi sustentada pela classificação dos documentos na reimportação. Não foi realizado um teste adicional de transferência para verificar o bloqueio efetivo de downloads repetidos.
+
+## 7. Limitações
+
+A validação não contempla:
+
+- Verificação da existência física dos arquivos na pasta de destino.
+- Identificação de documentos modificados após a coleta.
+- Comparação de hashes ou conteúdo dos arquivos.
+- Recuperação do histórico após desinstalação da extensão.
+
+A detecção de modificações será tratada no UC04.
+
+## 8. Conclusão
+
+O **UC03 — Identificar documentos já coletados** foi considerado funcionalmente validado na versão v0.3.3.
+
+Os testes demonstraram o reconhecimento de 96 documentos previamente baixados, a persistência do histórico entre sessões do navegador e a manutenção de um documento malsucedido como pendente.
+
+**Decisão:** UC03 aprovado e encerrado para o escopo validado.
+
+**Próximo caso de uso:** UC04 — Detectar documentos modificados.
