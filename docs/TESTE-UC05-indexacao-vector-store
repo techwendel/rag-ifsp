@@ -1,0 +1,138 @@
+# TESTE — UC05: Indexação de documentos no Vector Store
+
+**Projeto:** RAG IFSP Itaquaquecetuba  
+**Caso de uso:** UC05 — Indexar documentos no OpenAI Vector Store  
+**Data da validação:** 08/11/2026  
+**Status:** APROVADO — validação funcional
+
+## 1. Objetivo
+
+Verificar a capacidade do sistema de incorporar novos documentos PDF ao Vector Store existente, preservando os arquivos anteriormente indexados e permitindo sua recuperação por meio de consultas em linguagem natural.
+
+## 2. Ambiente de teste
+
+- **Repositório documental:** Google Drive
+- **Ambiente de indexação:** Google Colab
+- **Vector Store:** `RAG_IFSP_Documentos`
+- **Biblioteca:** OpenAI Python SDK
+- **Interface Streamlit:** não utilizada neste teste
+
+O procedimento reutilizou o Colab e o Vector Store existentes, sem modificações na arquitetura do MVP.
+
+## 3. Escopo
+
+Foram selecionados 96 documentos PDF, distribuídos entre duas pastas:
+
+| Pasta | Documentos |
+|---|---:|
+| `Cursos_de_Extensao` | 48 |
+| `Projetos_de_Extensao` | 48 |
+| **Total** | **96** |
+
+Os demais documentos do acervo não fizeram parte da nova operação de indexação.
+
+## 4. Procedimentos e resultados
+
+### Teste 1 — Identificação dos documentos
+
+O Colab identificou corretamente os 96 PDFs selecionados nas duas pastas do Google Drive.
+
+**Resultado:** Aprovado.
+
+### Teste 2 — Indexação
+
+Os 96 documentos foram enviados ao Vector Store existente.
+
+**Resultado da execução:**
+
+- Documentos indexados: 96
+- Falhas reportadas: 0
+- Total de nomes registrados: 181
+
+**Resultado:** Aprovado.
+
+### Teste 3 — Verificação do Vector Store
+
+Após a indexação, foi realizada uma consulta ao estado do Vector Store pela API.
+
+| Indicador | Resultado |
+|---|---:|
+| Total de arquivos | 181 |
+| Processamento concluído | 181 |
+| Falhas | 0 |
+| Em processamento | 0 |
+| Status | `completed` |
+
+Os 85 documentos anteriores permaneceram no índice.
+
+**Resultado:** Aprovado.
+
+### Teste 4 — Recuperação semântica
+
+**Consulta utilizada:**
+
+"Cursos de extensão oferecidos pelo IFSP Itaquaquecetuba"
+
+**Resultados observados:**
+
+- Tempo de busca: 1,38 segundo
+- Resultados retornados: 5
+- Maior score de relevância: aproximadamente 0,905
+- Recuperação de documentos relacionados à extensão, incluindo documentos do novo acervo
+
+**Resultado:** Aprovado.
+
+### Teste 5 — Consulta documental com RAG
+
+**Pergunta utilizada:**
+
+"Quais iniciativas relacionadas à sustentabilidade e ao meio ambiente aparecem nos documentos do campus Itaquaquecetuba?"
+
+O sistema produziu uma resposta em linguagem natural, identificando iniciativas institucionais e apresentando referências documentais.
+
+**Resultados observados:**
+
+- Tempo total: 7,69 segundos
+- Documentos citados: 9
+- Resposta produzida com utilização do Vector Store existente
+
+**Resultado:** Aprovado.
+
+### Teste 6 — Conferência documental
+
+Uma informação apresentada na resposta foi conferida manualmente no documento original pelo responsável pelo teste.
+
+A informação foi considerada compatível com a fonte consultada.
+
+**Resultado:** Aprovado para a verificação pontual realizada.
+
+## 5. Observações e limitações
+
+Durante os testes, foram identificados documentos com nomes diferentes e conteúdo aparentemente equivalente, indicando possíveis duplicações no índice.
+
+A rotina atual utiliza nomes de arquivos como critério inicial para evitar reenvios. Não foi realizada uma validação abrangente de duplicações por conteúdo.
+
+A conferência factual da resposta foi pontual e não representa uma avaliação sistemática da precisão do RAG.
+
+Os tempos de execução registrados correspondem às consultas realizadas e não constituem medidas de desempenho generalizáveis.
+
+## 6. Conclusão
+
+O UC05 foi **validado funcionalmente**, demonstrando que o sistema é capaz de:
+
+- Identificar os documentos selecionados no Google Drive.
+- Indexar novos PDFs no Vector Store existente.
+- Preservar os documentos anteriormente indexados.
+- Confirmar a conclusão do processamento.
+- Recuperar informações por busca semântica.
+- Produzir respostas em linguagem natural com referências documentais.
+
+A validação foi realizada sem recriação do Vector Store, conversão manual dos PDFs ou alterações na arquitetura do MVP.
+
+**Resultado final: UC05 — APROVADO.**
+
+A validação da experiência de consulta pela interface Streamlit permanece como atividade posterior, fora do escopo deste teste.
+
+---
+
+**Princípio do projeto:** Localizar. Consultar. Conferir a fonte. Simples assim.
