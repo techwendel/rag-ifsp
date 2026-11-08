@@ -1,0 +1,41 @@
+# Validação funcional — Detecção de documentos modificados v0.3.4
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC04 — Detectar documentos modificados  
+**Versão validada:** v0.3.4  
+**Data:** 08/11/2026  
+**Situação:** Aprovado funcionalmente, com ressalva operacional
+
+## 1. Objetivo
+
+Validar a capacidade da extensão de identificar modificações em documentos PDF anteriormente coletados, mesmo quando seus endereços permanecem inalterados.
+
+A verificação utiliza hashes SHA-256 para comparar o conteúdo atual dos documentos com referências previamente armazenadas.
+
+## 2. Funcionalidades avaliadas
+
+- Acionamento manual pelo botão **Verificar atualizações**.
+- Criação de referências SHA-256.
+- Armazenamento persistente dos hashes.
+- Identificação de documentos inalterados.
+- Identificação de documentos modificados.
+- Preservação dos hashes de referência após a detecção de alterações.
+- Continuidade do histórico de documentos coletados pelo UC03.
+
+## 3. Ambiente de testes
+
+Foram utilizados dois ambientes:
+
+**Ambiente institucional**
+
+- Portal IFSP — Campus Itaquaquecetuba.
+- Catálogo contendo 97 documentos PDF.
+- Histórico de 96 documentos coletados anteriormente.
+- Google Chrome com a extensão v0.3.4.
+
+**Ambiente experimental controlado**
+
+- Servidor HTTP local em Python.
+- Endereço de teste: `http://localhost:8765/edital.pdf`.
+- Duas versões de um documento PDF.
+- Versão A: edital com 10
