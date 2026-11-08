@@ -1,0 +1,38 @@
+# UC02 — Baixar documentos PDF catalogados
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC02  
+**Status:** Aguardando validação funcional
+
+## 1. Objetivo
+
+Permitir que o usuário realize o download dos documentos PDF identificados durante a catalogação do portal institucional do IFSP Itaquaquecetuba.
+
+## 2. Ator principal
+
+Usuário da extensão do Google Chrome.
+
+## 3. Pré-condições
+
+- A extensão está instalada e habilitada no navegador.
+- A catalogação de documentos (UC01) foi executada.
+- Existem documentos PDF identificados no catálogo.
+
+## 4. Fluxo principal
+
+1. O usuário acessa a funcionalidade de download da extensão.
+2. O sistema utiliza os links dos PDFs previamente catalogados.
+3. O usuário inicia o processo de download.
+4. O sistema solicita o download dos documentos.
+5. O sistema acompanha o andamento das operações.
+6. Ao término, o sistema apresenta os resultados dos downloads.
+
+## 5. Fluxos alternativos
+
+**FA01 — Documento indisponível**
+
+Caso um documento não esteja acessível, o sistema registra a falha e prossegue com os demais downloads, quando possível.
+
+**FA02 — Falha durante o download**
+
+Caso ocorra um erro de rede ou de transferência, o sistema identifica a
