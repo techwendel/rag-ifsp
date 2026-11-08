@@ -53,3 +53,90 @@ Este caso de uso contempla:
 
 **Observação:** a identificação e a catalogação não implicam o download dos arquivos PDF.
 
+## 7. Fluxos alternativos e de exceção
+
+### FA01 — Página sem documentos PDF
+
+**Ponto de ocorrência:** etapa 6 do fluxo principal.
+
+1. O sistema examina uma página elegível.
+2. Nenhum link para documento PDF é identificado.
+3. O sistema prossegue com as demais páginas elegíveis, quando houver.
+4. A ausência de PDFs nessa página não é tratada como erro.
+
+### FA02 — Referência duplicada
+
+**Ponto de ocorrência:** etapa 7 do fluxo principal.
+
+1. O sistema identifica uma URL de documento já registrada na catalogação.
+2. O sistema reconhece a duplicidade conforme suas regras de comparação.
+3. O sistema evita criar uma segunda entrada para a mesma referência.
+4. A catalogação prossegue normalmente.
+
+### FA03 — Limite de rastreamento atingido
+
+**Ponto de ocorrência:** etapa 5 do fluxo principal.
+
+1. O sistema atinge um dos limites configurados de rastreamento.
+2. O sistema interrompe a expansão da coleta correspondente.
+3. Os documentos identificados até aquele momento são preservados no catálogo.
+
+### EX01 — Página inacessível
+
+**Ponto de ocorrência:** etapa 4 do fluxo principal.
+
+1. O sistema tenta acessar uma página institucional.
+2. O acesso falha por indisponibilidade, erro de rede ou outra condição técnica.
+3. O sistema registra a ocorrência, quando houver mecanismo de registro disponível.
+4. O sistema prossegue com outras páginas elegíveis, sempre que possível.
+
+### EX02 — Link inválido ou não processável
+
+**Ponto de ocorrência:** etapas 4 a 6 do fluxo principal.
+
+1. O sistema encontra um link inválido ou que não consegue processar.
+2. O link é desconsiderado ou a falha é registrada, conforme as regras implementadas.
+3. O sistema continua o processamento dos demais links.
+
+**Nota de validação:** os comportamentos descritos constituem a especificação proposta. Sua correspondência com a implementação v0.3.0 deverá ser confirmada por inspeção do código e execução dos testes.
+
+## 8. Regras de negócio e restrições operacionais
+
+**RN01 — Escopo institucional**
+
+O rastreamento deve considerar apenas páginas pertencentes aos endereços institucionais autorizados e às regras de escopo configuradas.
+
+**RN02 — Pontos de partida**
+
+A catalogação deve iniciar pelos endereços previamente configurados na extensão. Na versão 0.3.0, foram identificados cinco pontos de partida.
+
+**RN03 — Profundidade de rastreamento**
+
+A extensão deve respeitar o limite de profundidade configurado. Na versão 0.3.0, o limite identificado é de três níveis.
+
+**RN04 — Quantidade máxima de páginas**
+
+A extensão deve respeitar o limite máximo de páginas processadas. Na versão 0.3.0, o limite identificado é de 120 páginas.
+
+**RN05 — Identificação de documentos**
+
+A catalogação deve aplicar as regras de reconhecimento de links para documentos PDF implementadas no sistema.
+
+**RN06 — Controle de duplicidade**
+
+Uma mesma referência documental não deve produzir registros duplicados no catálogo, conforme os critérios de comparação de URLs adotados.
+
+**RN07 — Separação entre catalogação e download**
+
+A operação de catalogação não deve iniciar automaticamente o download dos arquivos identificados.
+
+**RN08 — Preservação da origem**
+
+Os registros catalogados devem permitir identificar o endereço de origem dos documentos, favorecendo sua rastreabilidade.
+
+### Observação sobre a implementação
+
+Os valores de profundidade e quantidade máxima de páginas correspondem à configuração identificada na versão 0.3.0.
+
+As demais regras expressam comportamentos a serem confrontados com a implementação e os testes existentes. Esta especificação não constitui, isoladamente, evidência de conformidade.
+
