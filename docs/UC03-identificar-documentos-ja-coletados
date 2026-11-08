@@ -1,0 +1,99 @@
+# UC03 — Identificar documentos já coletados
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC03  
+**Status:** Aguardando implementação e validação funcional
+
+## 1. Objetivo
+
+Permitir que a extensão identifique documentos PDF já coletados em execuções anteriores, evitando downloads duplicados e processamento desnecessário.
+
+## 2. Ator principal
+
+Administrador do acervo documental.
+
+## 3. Pré-condições
+
+- A extensão está instalada e habilitada no Google Chrome.
+- O UC01 permite catalogar documentos PDF.
+- O UC02 permite baixar os documentos catalogados.
+- O sistema dispõe de um mecanismo para registrar e consultar o histórico de documentos coletados.
+
+## 4. Fluxo principal
+
+1. O usuário executa a catalogação de documentos PDF.
+2. O sistema identifica os documentos disponíveis no portal institucional.
+3. O sistema consulta o histórico de documentos anteriormente coletados.
+4. O sistema compara os documentos encontrados com os registros existentes.
+5. O sistema identifica quais documentos já foram coletados e quais são novos.
+6. O sistema apresenta essa classificação ao usuário.
+7. Ao iniciar os downloads, o sistema processa apenas os documentos ainda não coletados.
+8. Após cada download concluído, o sistema atualiza o histórico.
+
+## 5. Fluxos alternativos
+
+**FA01 — Primeira execução**
+
+Caso não exista histórico de coleta, todos os documentos identificados são considerados novos.
+
+**FA02 — Nenhum documento novo**
+
+Caso todos os documentos já estejam registrados como coletados, o sistema informa que não há novos downloads necessários.
+
+**FA03 — Falha no download**
+
+Caso um documento não seja baixado com sucesso, ele não deverá ser registrado como concluído e poderá ser processado em uma execução posterior.
+
+**FA04 — Histórico indisponível**
+
+Caso o histórico não possa ser consultado, o sistema informa a ocorrência e evita tratar documentos como inéditos sem confirmação.
+
+## 6. Regras de negócio
+
+- **RN01:** O histórico de coleta deve persistir após o fechamento e a reabertura do navegador.
+- **RN02:** A identificação inicial de documentos já coletados poderá utilizar URLs normalizadas e identificadores persistentes.
+- **RN03:** Um documento somente será considerado coletado após a confirmação de download concluído.
+- **RN04:** A repetição da coleta, sem novos documentos, não deverá gerar downloads adicionais.
+- **RN05:** Documentos com falha anterior deverão permanecer elegíveis para nova tentativa.
+- **RN06:** O usuário deverá conseguir identificar os documentos novos e os já coletados.
+
+## 7. Pós-condições
+
+- O histórico de documentos coletados permanece atualizado.
+- Os documentos anteriormente coletados são reconhecidos.
+- Downloads duplicados são evitados em execuções posteriores.
+- Documentos novos permanecem disponíveis para download.
+
+## 8. Critérios de aceitação
+
+- **CA01:** A extensão reconhece documentos baixados em execuções anteriores.
+- **CA02:** O histórico permanece disponível após reiniciar o Chrome.
+- **CA03:** A repetição da coleta sem novidades não produz novos downloads.
+- **CA04:** Um PDF recém-publicado é identificado como novo.
+- **CA05:** Um download malsucedido não é registrado como concluído.
+- **CA06:** O usuário consegue visualizar a quantidade de documentos novos e já coletados.
+
+## 9. Casos de teste
+
+| Teste | Cenário | Resultado esperado |
+|---|---|---|
+| CT01 | Primeira coleta sem histórico | Todos os PDFs são classificados como novos |
+| CT02 | Repetição da coleta sem novidades | Nenhum download adicional |
+| CT03 | Novo PDF publicado | Somente o novo documento é elegível para download |
+| CT04 | Fechamento e reabertura do Chrome | Histórico preservado |
+| CT05 | PDF com falha anterior | Documento permanece elegível |
+| CT06 | Mesmo PDF identificado em páginas diferentes, com a mesma URL normalizada | Documento reconhecido como já coletado |
+
+## 10. Limites do escopo
+
+O UC03 identifica documentos já coletados com base nos registros disponíveis.
+
+A detecção de alterações no conteúdo de um documento anteriormente coletado pertence ao **UC04 — Detectar documentos modificados**.
+
+Não fazem parte deste caso de uso a comparação de hashes de conteúdo, a organização por categorias ou a indexação no Vector Store.
+
+## 11. Resultado esperado
+
+Ao executar novamente a coleta do portal institucional, a extensão reconhece os documentos já processados, identifica eventuais novidades e evita downloads desnecessários.
+
+**Situação:** Especificação inicial. A implementação e a validação serão realizadas após análise do código existente.
