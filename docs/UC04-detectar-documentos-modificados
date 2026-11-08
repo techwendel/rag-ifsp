@@ -1,0 +1,121 @@
+# UC04 — Detectar documentos modificados
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC04  
+**Status:** Aguardando implementação e validação funcional  
+**Versão prevista:** v0.3.4
+
+## 1. Objetivo
+
+Permitir que a extensão identifique alterações em documentos PDF anteriormente coletados, mesmo quando seus endereços permanecem inalterados.
+
+## 2. Ator principal
+
+Administrador do acervo documental.
+
+## 3. Pré-condições
+
+- A extensão está instalada e habilitada no Google Chrome.
+- O UC01 permite catalogar documentos PDF.
+- O UC02 permite baixar documentos.
+- O UC03 mantém o histórico dos documentos coletados.
+- O usuário dispõe de um catálogo importado.
+
+## 4. Fluxo principal
+
+1. O usuário importa um catálogo de documentos PDF.
+2. O sistema identifica os documentos já coletados.
+3. O usuário aciona o botão **Verificar atualizações**.
+4. O sistema consulta sequencialmente os documentos conhecidos.
+5. O sistema obtém o conteúdo de cada PDF e calcula seu hash SHA-256.
+6. O sistema compara o hash obtido com o hash de referência armazenado.
+7. O sistema classifica cada documento como inalterado ou modificado.
+8. O sistema apresenta os resultados da verificação.
+
+## 5. Fluxos alternativos
+
+**FA01 — Documento sem hash de referência**
+
+Caso o documento tenha sido coletado antes da implementação do UC04, o sistema registra seu hash inicial, identificando a operação como estabelecimento da referência, e não como alteração detectada.
+
+**FA02 — Documento modificado**
+
+Caso o hash atual seja diferente do hash de referência, o sistema identifica o documento como modificado, preservando o registro anterior.
+
+**FA03 — Documento indisponível**
+
+Caso o servidor não disponibilize o documento, o sistema registra a falha e prossegue com os demais arquivos.
+
+**FA04 — Documento novo**
+
+Caso o documento ainda não exista no histórico, o sistema o identifica como novo, sem classificá-lo como modificado.
+
+**FA05 — Interrupção da verificação**
+
+Caso o usuário interrompa a operação, o sistema preserva os resultados já obtidos e informa os documentos não verificados.
+
+## 6. Regras de negócio
+
+- **RN01:** A verificação será iniciada exclusivamente pelo botão **Verificar atualizações**.
+- **RN02:** O sistema utilizará SHA-256 para identificar alterações nos bytes dos documentos.
+- **RN03:** Os hashes de referência deverão persistir entre sessões do navegador.
+- **RN04:** A verificação não deverá substituir automaticamente os arquivos existentes.
+- **RN05:** A identificação de uma alteração não deverá atualizar automaticamente o hash de referência.
+- **RN06:** Documentos sem hash anterior poderão receber uma referência inicial, sem serem classificados como modificados.
+- **RN07:** Uma falha individual não deverá interromper toda a verificação.
+- **RN08:** Os resultados deverão distinguir documentos inalterados, modificados, novos e não verificáveis.
+
+## 7. Pós-condições
+
+- Os documentos verificados possuem resultados registrados.
+- Os documentos modificados são identificados.
+- Os hashes de referência anteriores são preservados.
+- Os arquivos locais não são substituídos automaticamente.
+- O usuário pode consultar o resultado da verificação.
+
+## 8. Critérios de aceitação
+
+| Critério | Resultado esperado |
+|---|---|
+| CA01 | A verificação começa somente após o acionamento do botão |
+| CA02 | PDFs com conteúdo idêntico são classificados como inalterados |
+| CA03 | PDFs com conteúdo diferente são classificados como modificados |
+| CA04 | Documentos sem hash anterior recebem uma referência inicial identificada |
+| CA05 | Falhas de acesso são registradas sem interromper toda a operação |
+| CA06 | Os hashes persistem após fechar e reabrir o Chrome |
+| CA07 | Os arquivos anteriormente baixados não são substituídos |
+| CA08 | Os resultados da verificação são apresentados ao usuário |
+
+## 9. Casos de teste
+
+| Teste | Cenário | Resultado esperado |
+|---|---|---|
+| CT01 | Documento com hash de referência e conteúdo inalterado | Classificado como inalterado |
+| CT02 | Mesma URL com conteúdo PDF diferente | Classificado como modificado |
+| CT03 | Documento coletado sem hash anterior | Referência inicial registrada |
+| CT04 | Link indisponível | Falha registrada |
+| CT05 | Documento novo no catálogo | Identificado como novo |
+| CT06 | Fechamento e reabertura do Chrome | Hash de referência preservado |
+| CT07 | Verificação repetida sem alterações | Nenhuma modificação identificada |
+| CT08 | Interrupção durante a verificação | Resultados anteriores preservados |
+
+## 10. Limites do escopo
+
+O UC04 contempla exclusivamente a identificação de alterações nos documentos PDF.
+
+Não fazem parte deste caso de uso:
+
+- Substituição automática dos arquivos locais.
+- Atualização automática de documentos modificados.
+- Comparação semântica ou textual entre versões.
+- Envio de arquivos ao Google Drive.
+- Atualização do Vector Store do Zezinho.
+- Agendamento automático de verificações.
+
+## 11. Resultado esperado
+
+Ao acionar **Verificar atualizações**, o usuário consegue identificar quais documentos permanecem inalterados, quais sofreram modificações e quais não puderam ser verificados.
+
+O sistema preserva os documentos e hashes de referência, permitindo que decisões posteriores de atualização sejam realizadas de maneira controlada.
+
+**Situação:** Especificação inicial. A implementação será realizada após análise da extensão v0.3.3.
