@@ -1,0 +1,223 @@
+# UC05 — Indexar documentos no Vector Store
+
+**Projeto:** Coletor IFSP Extensão  
+**Caso de uso:** UC05  
+**Versão de referência:** v0.3.4  
+**Situação:** Planejado  
+**Prioridade:** Alta
+
+## 1. Objetivo
+
+Permitir que documentos PDF identificados e coletados pela extensão sejam enviados e indexados em um Vector Store da OpenAI, tornando seu conteúdo disponível para consultas realizadas pelo assistente virtual Zezinho.
+
+O caso de uso estabelece a integração inicial entre o coletor de documentos e o mecanismo de recuperação de informações utilizado pelo assistente.
+
+## 2. Justificativa
+
+Os casos de uso anteriores permitiram identificar, baixar, reconhecer e detectar alterações em documentos PDF disponibilizados pelo portal institucional.
+
+Entretanto, esses documentos ainda não estão automaticamente disponíveis para consulta pelo Zezinho.
+
+O UC05 pretende estabelecer essa conexão, permitindo que os documentos coletados sejam utilizados como fontes de informação nas respostas do assistente.
+
+A implementação inicial será experimental, priorizando a comprovação do funcionamento da integração antes da ampliação para todo o acervo.
+
+## 3. Pré-condições
+
+- A extensão deve estar instalada e funcionando.
+- O UC01 deve permitir identificar documentos PDF.
+- O UC02 deve permitir obter os arquivos.
+- O UC03 deve manter o histórico de documentos coletados.
+- O UC04 deve permitir identificar alterações nos documentos.
+- Deve existir um Vector Store configurado na OpenAI.
+- Deve existir um mecanismo seguro de autenticação para comunicação com a API.
+- O Zezinho deve estar configurado para consultar o Vector Store utilizado no experimento.
+
+## 4. Fluxo principal
+
+1. O usuário seleciona um documento PDF já identificado pelo coletor.
+2. O usuário solicita manualmente a indexação do documento.
+3. O sistema obtém o arquivo PDF correspondente.
+4. O sistema envia o arquivo para a OpenAI por meio de um componente de integração autenticado.
+5. O arquivo é associado ao Vector Store definido para o experimento.
+6. O sistema acompanha o processamento até identificar se a indexação foi concluída ou falhou.
+7. O sistema registra o resultado da operação.
+8. O usuário realiza uma pergunta ao Zezinho relacionada ao conteúdo do documento.
+9. O Zezinho consulta o Vector Store e apresenta uma resposta fundamentada nas informações recuperadas.
+
+## 5. Requisitos funcionais
+
+**RF01 — Seleção do documento**
+
+O sistema deve permitir selecionar um documento PDF para indexação.
+
+**RF02 — Envio do arquivo**
+
+O sistema deve permitir encaminhar o PDF selecionado para a OpenAI utilizando autenticação segura.
+
+**RF03 — Associação ao Vector Store**
+
+O documento enviado deve ser associado ao Vector Store previamente definido.
+
+**RF04 — Acompanhamento do processamento**
+
+O sistema deve identificar se a indexação foi concluída, permanece em processamento ou apresentou falha.
+
+**RF05 — Registro da operação**
+
+O sistema deve registrar, no mínimo:
+
+- Identificação do documento no catálogo.
+- URL de origem.
+- Hash SHA-256 de referência ou do arquivo efetivamente enviado.
+- Identificador do arquivo na OpenAI.
+- Identificador do Vector Store.
+- Data e hora da operação.
+- Situação da indexação.
+
+**RF06 — Consulta pelo Zezinho**
+
+O documento indexado deve estar disponível para recuperação por meio do mecanismo de busca utilizado pelo Zezinho.
+
+**RF07 — Tratamento de falhas**
+
+O sistema deve informar falhas de envio, autenticação, associação ao Vector Store ou processamento, sem registrar uma indexação malsucedida como concluída.
+
+## 6. Requisitos não funcionais
+
+- As credenciais da API não devem ser incorporadas diretamente ao código distribuído da extensão.
+- O envio deve ocorrer por uma conexão segura.
+- A operação não deve alterar o arquivo original.
+- O histórico dos casos de uso anteriores deve ser preservado.
+- O processo deve permitir rastrear qual documento e qual versão foram enviados.
+- O experimento deve utilizar o menor conjunto de documentos necessário para sua validação.
+
+## 7. Escopo da primeira implementação
+
+A primeira versão deverá contemplar:
+
+- Seleção manual de um PDF.
+- Envio do documento.
+- Associação a um Vector Store de teste.
+- Confirmação da conclusão da indexação.
+- Registro do resultado.
+- Consulta experimental pelo Zezinho.
+
+Nesta etapa, **não será obrigatório implementar**:
+
+- Indexação automática de todos os documentos coletados.
+- Sincronização automática com o Google Drive.
+- Classificação por categoria.
+- Atualização ou substituição automática de documentos modificados.
+- Exclusão automática de versões antigas.
+- Processamento em lote de todo o catálogo.
+
+Essas funcionalidades poderão ser desenvolvidas posteriormente, conforme os resultados obtidos.
+
+## 8. Fluxos alternativos e exceções
+
+**FA01 — Falha no envio**
+
+Caso o envio não seja concluído, o sistema deve registrar a falha e permitir nova tentativa.
+
+**FA02 — Falha no processamento**
+
+Caso a OpenAI não consiga processar o documento, o sistema deve registrar a situação e informar que o arquivo não está disponível para consulta.
+
+**FA03 — Documento indisponível**
+
+Caso o PDF não possa ser obtido, o processo deve ser interrompido sem modificar o histórico de coleta.
+
+**FA04 — Documento já indexado**
+
+Na primeira implementação, a existência de uma indexação anterior deve ser verificada pelo registro local, quando disponível. A prevenção completa de duplicatas será tratada na evolução do caso de uso.
+
+**FA05 — Documento modificado**
+
+Caso o UC04 identifique uma alteração no documento, o sistema deverá preservar o registro da versão anteriormente indexada. A política de substituição será definida em etapa posterior.
+
+## 9. Integração com os casos de uso anteriores
+
+| Caso de uso | Contribuição para o UC05 |
+|---|---|
+| UC01 — Catalogar | Fornece a identificação e a URL do documento |
+| UC02 — Baixar | Permite obter o arquivo PDF |
+| UC03 — Reconhecer | Fornece o histórico de coleta |
+| UC04 — Detectar alterações | Permite identificar versões modificadas |
+
+O UC05 não deve alterar o funcionamento já validado desses componentes.
+
+## 10. Estratégia de validação
+
+A validação inicial deverá utilizar um único PDF conhecido, preferencialmente com informações objetivas que permitam verificar a qualidade da recuperação.
+
+### Etapa 1 — Preparação
+
+- Selecionar um PDF de teste.
+- Confirmar que o documento pode ser obtido pelo coletor.
+- Preparar um Vector Store de teste.
+- Configurar o componente de integração com a API.
+
+### Etapa 2 — Indexação
+
+- Solicitar o envio do PDF.
+- Verificar o identificador retornado pela OpenAI.
+- Confirmar sua associação ao Vector Store.
+- Aguardar a conclusão do processamento.
+- Registrar o resultado.
+
+### Etapa 3 — Recuperação
+
+- Formular uma pergunta cuja resposta esteja explicitamente presente no documento.
+- Executar a consulta pelo Zezinho.
+- Verificar se o documento foi recuperado.
+- Comparar a resposta apresentada com o conteúdo original.
+- Verificar a identificação da fonte utilizada.
+
+### Etapa 4 — Tratamento de falhas
+
+- Simular ou observar uma falha controlada de comunicação ou processamento.
+- Verificar se o sistema registra corretamente a ocorrência.
+- Confirmar que a falha não produz um registro de indexação concluída.
+
+## 11. Critérios de aceitação
+
+O UC05 será considerado funcionalmente validado quando:
+
+1. Um PDF coletado puder ser enviado à OpenAI.
+2. O arquivo for associado ao Vector Store definido.
+3. A conclusão da indexação for confirmada.
+4. O sistema registrar os identificadores e a situação da operação.
+5. O Zezinho conseguir recuperar informações presentes no documento.
+6. A resposta puder ser conferida diretamente no PDF original.
+7. O funcionamento dos casos de uso anteriores permanecer preservado.
+
+## 12. Limitações conhecidas
+
+- A indexação de um arquivo não garante, isoladamente, que todas as perguntas serão respondidas corretamente.
+- A recuperação depende do conteúdo do PDF e da configuração da busca.
+- Arquivos digitalizados ou com texto de difícil extração podem exigir tratamento adicional.
+- O envio e a manutenção dos documentos na OpenAI podem gerar custos.
+- A integração com o Google Drive não faz parte da validação inicial.
+- A sincronização de versões e a prevenção completa de duplicatas ainda não estão contempladas.
+
+## 13. Resultado esperado
+
+Ao final da implementação inicial, espera-se demonstrar que um documento PDF identificado e coletado pela extensão pode ser enviado, indexado e utilizado como fonte de informação pelo Zezinho.
+
+Essa comprovação estabelecerá a base técnica para a futura integração do acervo institucional completo, incluindo mecanismos de sincronização, atualização de versões e gerenciamento dos documentos indexados.
+
+## 14. Evoluções futuras
+
+Após a validação inicial, poderão ser avaliadas:
+
+- Indexação de múltiplos documentos.
+- Prevenção de indexações duplicadas.
+- Sincronização entre o histórico local e o Vector Store.
+- Substituição controlada de documentos modificados.
+- Remoção de versões obsoletas.
+- Integração com o Google Drive.
+- Utilização de categorias e metadados para filtragem das buscas.
+- Automatização do processo de indexação.
+
+**Próxima atividade:** definir a arquitetura mínima de integração e executar o primeiro experimento de indexação com um PDF.
